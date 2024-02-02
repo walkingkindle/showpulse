@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ShowPulse.Models;
 
 namespace ShowPulse.Controllers
@@ -70,6 +71,43 @@ namespace ShowPulse.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpGet("vector/{id}")]
+        public async Task<IActionResult> GetShowVector(int id)
+        {
+            var show = await GetShow(id);
+            if (show == null)
+            {
+                return NotFound();
+            }
+
+            var vector = await GetVectorFromFlaskApi(show.Value.Description);
+
+            if(vector!= null)
+            {
+                return Ok(vector);
+            }
+            else
+            {
+                return StatusCode(500, "Error getting the vector from the api");
+            }
+        }
+
+
+        private async Task <string?>GetVectorFromFlaskApi(string Description)
+        {
+            string flaskApiUrl = "http://localhost:5000/get_vector";
+            var payload = new { description = Description};
+            using (HttpClient client = new HttpClient())
+            {
+                var json = JsonConvert.SerializeObject(payload);
+                var jsonContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PostAsJsonAsync(flaskApiUrl, jsonContent);
+                string responseMessage = await response.Content.ReadAsStringAsync();
+                //var vector = JsonConvert.DeserializeObject<double[]>(responseMessage);
+                return responseMessage;
+            }
         }
 
         // POST: api/Shows

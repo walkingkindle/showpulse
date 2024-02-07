@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ShowPulse.Models
     {
@@ -18,5 +19,7 @@ namespace ShowPulse.Models
         public string? Status { get; set; }
         public string? OriginalCountry { get; set; }
         public string? OriginalLanguage { get; set; }
+        public string? Vector { get; set; }
+
     }
 }

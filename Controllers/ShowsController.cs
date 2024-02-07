@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using ShowPulse.Models;
+using System.Text.Json;
+using System.Text;
 
 namespace ShowPulse.Controllers
 {
@@ -76,14 +77,13 @@ namespace ShowPulse.Controllers
         [HttpGet("vector/{id}")]
         public async Task<IActionResult> GetShowVector(int id)
         {
-            var show = await GetShow(id);
+            Show? show = await _context.FindAsync<Show>(id);
             if (show == null)
             {
                 return NotFound();
             }
 
-            var vector = await GetVectorFromFlaskApi(show.Value.Description);
-
+            var vector = show.Vector;
             if(vector!= null)
             {
                 return Ok(vector);
@@ -94,21 +94,31 @@ namespace ShowPulse.Controllers
             }
         }
 
-
-        private async Task <string?>GetVectorFromFlaskApi(string Description)
+        [HttpGet("vectors/{id1}/{id2}/{id3}")]
+        public async Task<IActionResult> GetAverageVector(int id1, int id2, int id3)
         {
-            string flaskApiUrl = "http://localhost:5000/get_vector";
-            var payload = new { description = Description};
-            using (HttpClient client = new HttpClient())
+            List<int> showIds = new List<int>() { id1, id2, id3 };
+            List<string> showVectors = new List<string>();
+            foreach (var id in showIds)
             {
-                var json = JsonConvert.SerializeObject(payload);
-                var jsonContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsJsonAsync(flaskApiUrl, jsonContent);
-                string responseMessage = await response.Content.ReadAsStringAsync();
-                //var vector = JsonConvert.DeserializeObject<double[]>(responseMessage);
-                return responseMessage;
+                Show? show = await _context.FindAsync<Show>(id);
+                if (show != null && show.Vector != null)
+                {
+                    showVectors.Add(show.Vector);
+                }
+               
             }
+            if(showVectors != null)
+            {
+                return Ok(showVectors);
+            }
+            else
+            {
+                return StatusCode(500, "Error getting the vectors from the api");
+            }
+
         }
+
 
         // POST: api/Shows
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

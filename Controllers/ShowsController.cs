@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ShowPulse.Models;
 using System.Text.Json;
 using System.Text;
+using ShowPulse.Engine;
 
 namespace ShowPulse.Controllers
 {
@@ -83,7 +84,7 @@ namespace ShowPulse.Controllers
                 return NotFound();
             }
 
-            var vector = show.Vector;
+            var vector = show.VectorDouble;
             if(vector!= null)
             {
                 return Ok(vector);
@@ -98,25 +99,26 @@ namespace ShowPulse.Controllers
         public async Task<IActionResult> GetAverageVector(int id1, int id2, int id3)
         {
             List<int> showIds = new List<int>() { id1, id2, id3 };
-            List<string> showVectors = new List<string>();
+            List<List<double>> showVectors = new List<List<double>>();
+           
             foreach (var id in showIds)
             {
                 Show? show = await _context.FindAsync<Show>(id);
                 if (show != null && show.Vector != null)
                 {
-                    showVectors.Add(show.Vector);
+                    List<double> showVectorDoubles = VectorEngine.ParseOutputToDoubles(show.Vector);
+                    showVectors.Add(showVectorDoubles);
                 }
-               
             }
-            if(showVectors != null)
+            if(showVectors!= null)
             {
-                return Ok(showVectors);
+                double[] averageVector = VectorEngine.CalculateAverageVector(showVectors);
+                return Ok(averageVector);
             }
             else
             {
                 return StatusCode(500, "Error getting the vectors from the api");
             }
-
         }
 
 

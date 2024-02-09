@@ -12,8 +12,8 @@ using ShowPulse.Models;
 namespace ShowPulse.Migrations
 {
     [DbContext(typeof(ShowContext))]
-    [Migration("20240207192052_ChangeVector")]
-    partial class ChangeVector
+    [Migration("20240209202705_AddNewVectorDouble")]
+    partial class AddNewVectorDouble
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,6 +61,9 @@ namespace ShowPulse.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Vector")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VectorDouble")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

@@ -60,6 +60,9 @@ namespace ShowPulse.Migrations
                     b.Property<string>("Vector")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("VectorDouble")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Shows");

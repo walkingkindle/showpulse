@@ -96,28 +96,29 @@ namespace ShowPulse.Controllers
         }
 
         [HttpGet("vectors/{id1}/{id2}/{id3}")]
-        public async Task<IActionResult> GetAverageVector(int id1, int id2, int id3)
+        public async Task<List<int>>  GetRecomendedShows(int id1, int id2, int id3)
         {
             List<int> showIds = new List<int>() { id1, id2, id3 };
-            List<List<double>> showVectors = new List<List<double>>();
+            List<double[]> showVectors = new List<double[]>();
            
             foreach (var id in showIds)
             {
                 Show? show = await _context.FindAsync<Show>(id);
-                if (show != null && show.Vector != null)
-                {
-                    List<double> showVectorDoubles = VectorEngine.ParseOutputToDoubles(show.Vector);
-                    showVectors.Add(showVectorDoubles);
-                }
+                double[] showVector = show.VectorDouble;
+                showVectors.Add(showVector);
+
             }
             if(showVectors!= null)
             {
                 double[] averageVector = VectorEngine.CalculateAverageVector(showVectors);
-                return Ok(averageVector);
+                List<Show> allShows =  _context.Shows.ToList();
+                List<int> recomendedShowIds = VectorEngine.GetSimilarities(allShows, averageVector, 8);
+                return recomendedShowIds;
             }
+
             else
             {
-                return StatusCode(500, "Error getting the vectors from the api");
+                return new List<int>();
             }
         }
 

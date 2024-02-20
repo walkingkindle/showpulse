@@ -11,20 +11,8 @@ namespace ShowPulse.Engine
         public class VectorObject
         {
             [JsonProperty("vector")]
-            public List<double> Vector { get; set; }
+            public List<double?>? Vector { get; set; }
         }
-        public static List<double> ParseOutputToDoubles(string output)
-        {
-            string[] jsonStrings = output.Trim().Split('\n');
-            List<double> doublesList = new List<double>();
-            foreach (string jsonString in jsonStrings)
-            {
-                VectorObject? vectorObject = JsonConvert.DeserializeObject<VectorObject>(jsonString);
-                doublesList.AddRange(vectorObject.Vector);
-            }
-            return doublesList;
-        }
-
         public static double[] CalculateAverageVector(List<double[]> vectors)
         {
             if (vectors == null || vectors.Count == 0 || vectors.Any(v => v == null || v.Length == 0))

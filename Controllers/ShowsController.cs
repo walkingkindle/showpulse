@@ -96,14 +96,14 @@ namespace ShowPulse.Controllers
         }
 
         [HttpGet("vectors/{id1}/{id2}/{id3}")]
-        public async Task<List<int>>  GetRecomendedShows(int id1, int id2, int id3)
+        public async Task<List<Show>>  GetRecomendedShows(int id1, int id2, int id3)
         {
             List<int> showIds = new List<int>() { id1, id2, id3 };
             List<double[]> showVectors = new List<double[]>();
-           
+          
             foreach (var id in showIds)
             {
-                Show? show = await _context.FindAsync<Show>(id);
+                Show show = await _context.FindAsync<Show>(id);
                 double[] showVector = show.VectorDouble;
                 showVectors.Add(showVector);
 
@@ -113,16 +113,22 @@ namespace ShowPulse.Controllers
                 double[] averageVector = VectorEngine.CalculateAverageVector(showVectors);
                 List<Show> allShows =  _context.Shows.ToList();
                 List<int> recomendedShowIds = VectorEngine.GetSimilarities(allShows, averageVector, 8);
-                return recomendedShowIds;
+                List<Show> suggestedShows = new List<Show>();
+                foreach(int showId in recomendedShowIds)
+                {
+                    Show? suggestedShow = await _context.Shows.FindAsync(showId);
+                    suggestedShows.Add(suggestedShow);
+                    
+                }
+                return suggestedShows;
             }
 
             else
             {
-                return new List<int>();
+                return new List<Show>();
             }
         }
-
-
+        
         // POST: api/Shows
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]

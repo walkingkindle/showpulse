@@ -8005,4 +8005,27 @@ popup.active{
     transform: translateY(-20px);
     pointer-events: none; 
 }
+.table-container {
+  width: 1000px;
+}
+
+.table-record {
+  border: solid;
+  background-color: white; /* Creamy color */
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.record-details {
+  padding-top: 10px;
+  display: none;
+}
+
+/* Style for expanding records */
+.expanded {
+  display: block;
+}
+
+
+
 

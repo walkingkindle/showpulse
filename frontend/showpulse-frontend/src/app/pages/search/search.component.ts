@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { SearchBannerComponent } from './search-banner/search-banner.component';
+import { FindShowComponent } from '../../components/find-show/find-show.component';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
-  imports:[SearchBannerComponent],
+  imports:[FindShowComponent],
   styleUrls: ['./search.component.css'],
   standalone:true
 })

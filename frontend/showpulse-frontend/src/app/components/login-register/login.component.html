@@ -1,0 +1,32 @@
+<!--------------LOGIN FORM------------>
+<div id="login">
+<div class="popup" id="login-popup">
+  <div class="popup-content" id="login-popup-content">
+      <div class="wrapper">
+          <div class="form-wrapper sign-in">
+            <form action="">
+                <h2 class="form-title">{{ isRegisterForm ? 'Register' : 'Login' }}</h2>
+                <div class="input-group">
+                  <input placeholder="" type="text" required>
+                  <label class="email-label" style="{{isRegisterForm ? 'left:20px' :'' }}">{{ isRegisterForm ? 'Email' : 'Username' }}</label>
+                </div>
+                <div class="input-group">
+                  <input type="password" name="password" id="" required>
+                  <label style="{{isRegisterForm ? 'left:35px' :'' }}">{{ isRegisterForm ? 'Password' : 'Password' }}</label>
+                </div>
+                <div *ngIf="isRegisterForm" class="input-group">
+                  <input type="password" name="confirm-password" id="" required>
+                  <label class="confirm-password-label" style="margin-left: 39px;">Confirm Password</label>
+                </div>
+                <button type="submit" class="login-button">{{ isRegisterForm ? 'Register' : 'Login' }}</button>
+                <div class="link text-center m-3">
+                  <p>{{ isRegisterForm ? 'Already have an account?' : "Don't have an account?" }}<a href="#" (click)="toggleForm()">{{ isRegisterForm ? 'Login' : 'Sign up' }}</a></p>
+                  <a href="#" class="social-icon"><i class="fab fa-google"></i></a> <!-- Google icon -->
+                  <a href="#" class="social-icon"><i class="fab fa-github"></i></a> <!-- GitHub icon -->
+                </div>
+              </form>              
+          </div>
+      </div>
+  </div>
+</div>
+</div>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShowPulse.Models;
 
@@ -11,9 +12,11 @@ using ShowPulse.Models;
 namespace ShowPulse.Migrations
 {
     [DbContext(typeof(ShowContext))]
-    partial class ShowContextModelSnapshot : ModelSnapshot
+    [Migration("20240304134010_RemoveVectorStringColumn")]
+    partial class RemoveVectorStringColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

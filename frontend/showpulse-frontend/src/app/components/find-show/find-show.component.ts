@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ShowService } from '../../services/show/show.service';
+import { Show } from '../../Models/Show';
 
 @Component({
   selector: 'app-find-show',
@@ -8,7 +10,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FindShowComponent implements OnInit {
 
-  constructor() { }
+
+
+  constructor(private showService:ShowService) {
+   }
 
   ngOnInit() {
   }

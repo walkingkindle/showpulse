@@ -74,6 +74,23 @@ namespace ShowPulse.Controllers
 
             return NoContent();
         }
+        
+        //GET: api/records
+        [HttpGet("records/{input}")]
+        //Return records that match the spefic input (NAME)
+        public async Task<ActionResult<IEnumerable<Show>>> GetRecordsByInput(string input)
+        {
+            var exactmatchedRecords = _context.Shows.Where(s => s.Name == input).Select(s => new Show { Id = s.Id, Name = s.Name, Description = s.Description, ImageUrl = s.ImageUrl, ReleaseDate = s.ReleaseDate, FinalEpisodeAired = s.FinalEpisodeAired, Score = s.Score, OriginalCountry = s.OriginalCountry, OriginalLanguage = s.OriginalLanguage }).ToList(); ;//exact match?
+
+            List<Show> matchedRecords = _context.Shows.Where(s => s.Name.Contains(input)).OrderByDescending(s => s.Name.StartsWith(input)).ThenByDescending(s => s.Name.IndexOf(input)).Take(10).Select(s => new Show { Id = s.Id, Name = s.Name, Description = s.Description, ImageUrl = s.ImageUrl, ReleaseDate = s.ReleaseDate, FinalEpisodeAired = s.FinalEpisodeAired, Score = s.Score, OriginalCountry = s.OriginalCountry, OriginalLanguage = s.OriginalLanguage }).ToList();
+            
+            if(exactmatchedRecords.Count == 0)
+            {
+                return matchedRecords;
+            }
+            return exactmatchedRecords;
+        }
+
 
         [HttpGet("vector/{id}")]
         public async Task<IActionResult> GetShowVector(int id)

@@ -19,7 +19,6 @@ namespace ShowPulse.Models
         public string? Status { get; set; }
         public string? OriginalCountry { get; set; }
         public string? OriginalLanguage { get; set; }
-        public string? Vector { get; set; }
         public double[]? VectorDouble { get; set; }
 
     }

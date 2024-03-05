@@ -8,18 +8,33 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid" style="height: 50%; padding: 40px">
-        <div class="row justify-content-center align-items-center vh-50">
-            <div class="col-md-6 mx-auto">
-                <form class=" bg-white rounded shadow" action="#">
+    <div class="container-fluid" style="padding: 40px">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form class="bg-white rounded shadow">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Search shows..." aria-label="Search shows..." aria-describedby="button-addon2">
-                        <button class="btn btn-primary" type="button" id="button-addon2">Select</button>
+                        <input type="text" class="form-control" name="show-search" placeholder="Search shows..." [(ngModel)]="input" (input)="search()">
+                        <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
                     </div>
                 </form>
+                <div class="search-results" *ngIf="shows != undefined">
+                    <div class="card mb-2" *ngFor="let show of shows">
+                        <div class="row no-gutters">
+                            <div class="col-md-1">
+                                <img src="https://www.thetvdb.com{{show.imageUrl}}" alt="Show Image" class="img-fluid" style="max-width: 100px;"> 
+                            </div>
+                            <div class="col-md-9">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ show.name }}</h5>
+                                    <p class="card-text">{{ show.releaseYear }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </div>    
     <div class="container-fluid mt-6 align-items-center mt-6" style="display: flex;">
         <div class="row justify-content-center align-items-center mt-6">
             <div class="col md-6 mx-auto justify-content-center">

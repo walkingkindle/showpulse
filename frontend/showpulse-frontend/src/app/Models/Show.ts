@@ -1,11 +1,11 @@
 export interface Show {
-    Id:number;
-    Name:string;
-    Description:string;
-    ImageUrl:string;
-    ReleaseDate:string;
-    FinalEpisodeAired:string;
-    Score:string;
-    OriginalCountry:string;
-    OriginalLanguage:string;
+    id:number;
+    name:string;
+    description:string;
+    imageUrl:string;
+    finalEpisodeAired:string;
+    score:string;
+    originalCountry:string;
+    originalLanguage:string;
+    releaseYear:number;
 }

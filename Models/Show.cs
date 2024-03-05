@@ -13,13 +13,15 @@ namespace ShowPulse.Models
         public string? Name { get; set; }
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
-        public DateTime? ReleaseDate { get; set; }
         public DateTime? FinalEpisodeAired { get; set; }
         public int? Score { get; set; }
         public string? Status { get; set; }
         public string? OriginalCountry { get; set; }
         public string? OriginalLanguage { get; set; }
         public double[]? VectorDouble { get; set; }
+        public int? ReleaseYear { get; set; }
+       
+     
 
     }
 }

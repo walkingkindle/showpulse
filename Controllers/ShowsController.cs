@@ -71,7 +71,6 @@ namespace ShowPulse.Controllers
                     throw;
                 }
             }
-
             return NoContent();
         }
         

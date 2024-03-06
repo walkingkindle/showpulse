@@ -90,7 +90,29 @@ $(function () {
     document.getElementById("myOverlay").style.display = "none";
   }
     
-    
+  $(document).ready(function() {
+    var progress = $('.progressbar .progress');
+  
+    function counterInit(fValue, lValue) {
+      var counterValue = parseInt($('.counter').text());
+      counterValue++;
+  
+      if (counterValue <= lValue) {
+        $('.counter').text(counterValue + '%');
+        progress.css({ 'width': counterValue + '%' });
+  
+        // Request animation frame for smoother animation
+        requestAnimationFrame(function() {
+          counterInit(fValue, lValue);
+        });
+      }
+    }
+  
+    counterInit(0, 100);
+  });
+  
+  
+  
     
     
     

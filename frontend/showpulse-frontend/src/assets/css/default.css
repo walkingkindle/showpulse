@@ -8265,6 +8265,9 @@ popup.active{
   transition: all 0.3s;
 }
 
-
+.show-image{
+  max-width: 60%;
+  height: auto;
+}
 
 

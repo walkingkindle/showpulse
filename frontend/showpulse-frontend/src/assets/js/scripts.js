@@ -89,32 +89,27 @@ $(function () {
     function closeSearch() {
     document.getElementById("myOverlay").style.display = "none";
   }
+
+    var body = document.querySelector('#features'),
+    bar = document.querySelector('.progress-bar'),
+    counter = document.querySelector('.count'),
+    i = 0,
+    throttle = 0.7; // 0-1
+
+(function draw() {
+  if(i <= 100) {
+    var r = Math.random();
     
-  $(document).ready(function() {
-    var progress = $('.progressbar .progress');
-  
-    function counterInit(fValue, lValue) {
-      var counterValue = parseInt($('.counter').text());
-      counterValue++;
-  
-      if (counterValue <= lValue) {
-        $('.counter').text(counterValue + '%');
-        progress.css({ 'width': counterValue + '%' });
-  
-        // Request animation frame for smoother animation
-        requestAnimationFrame(function() {
-          counterInit(fValue, lValue);
-        });
-      }
+    requestAnimationFrame(draw);  
+    bar.style.width = i + '%';
+    counter.innerHTML = Math.round(i) + '%';
+    
+    if(r < throttle) { // Simulate d/l speed and uneven bitrate
+      i = i + r;
     }
-  
-    counterInit(0, 100);
-  });
-  
-  
-  
-    
-    
-    
+  } else {;
+    bar.className += " done";
+  }
+})();
     
 });

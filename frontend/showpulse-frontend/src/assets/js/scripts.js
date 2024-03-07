@@ -94,7 +94,7 @@ $(function () {
     bar = document.querySelector('.progress-bar'),
     counter = document.querySelector('.count'),
     i = 0,
-    throttle = 0.7; // 0-1
+    throttle = 0.5; // 0-1
 
 (function draw() {
   if(i <= 100) {
@@ -107,9 +107,18 @@ $(function () {
     if(r < throttle) { // Simulate d/l speed and uneven bitrate
       i = i + r;
     }
-  } else {;
-    bar.className += " done";
+  } else {
+    setTimeout(function() {
+        bar.className += ' done'; // Add the "done" class for fading effect
+        counter.style.transition = 'opacity 1s'; // Apply transition to counter
+        bar.style.opacity = '0'; // Fade out the bar
+        counter.style.opacity = '0'; // Fade out the percentage
+      }, 1500); 
+    setTimeout(function() {
+        $('.carousel-container').removeClass('hidden')
+    },1500)
   }
 })();
+
     
 });

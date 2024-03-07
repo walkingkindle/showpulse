@@ -75,7 +75,7 @@ namespace ShowPulse.Controllers
         }
         
         //GET: api/records
-        [HttpGet("records/{input}")]
+        [HttpGet("search/{input}")]
         //Return records that match the spefic input (NAME)
         public async Task<ActionResult<IEnumerable<Show>>> GetRecordsByInput(string input)
         {
@@ -111,7 +111,7 @@ namespace ShowPulse.Controllers
             }
         }
 
-        [HttpGet("vectors/{id1}/{id2}/{id3}")]
+        [HttpGet("suggest/{id1}/{id2}/{id3}")]
         public async Task<List<Show>>  GetRecomendedShows(int id1, int id2, int id3)
         {
             List<int> showIds = new List<int>() { id1, id2, id3 };
@@ -127,7 +127,7 @@ namespace ShowPulse.Controllers
             if(showVectors!= null)
             {
                 double[] averageVector = VectorEngine.CalculateAverageVector(showVectors);
-                List<Show> allShows =  _context.Shows.ToList();
+                List<Show> allShows = await _context.Shows.ToListAsync();
                 List<int> recomendedShowIds = VectorEngine.GetSimilarities(allShows, averageVector, 8);
                 List<Show> suggestedShows = new List<Show>();
                 foreach(int showId in recomendedShowIds)

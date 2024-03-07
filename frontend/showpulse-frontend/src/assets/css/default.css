@@ -8242,26 +8242,17 @@ popup.active{
   }
 }
 
-
-
-.progress-container {
-  transform: translate(-50%, -50%);
-  display: flex;
-  justify-content: center;
-}
-
 .progress-bar {
   height: 2px;
   width: 100%;
-  display: flex;
-  justify-content: center;
   background: #1de9b6;
 }
 
 .done {
   height: 100%;
   width: 100%;
-  transition: all .33s ease;
+  transition: all 2s ease;
+  background: white;
 }
 
 .count {
@@ -8270,15 +8261,32 @@ popup.active{
   font-size: 3em;
   color: white;
   margin-top: 20px;
-  align-items: center;
 }
-
-
 
 .show-image{
   max-width: 60%;
   height: auto;
 }
 
+.carousel-container {
+  position: relative; /* Ensure relative positioning */
+  visibility: hidden;
+  animation: appearing-menu 0.8s forwards;
+  animation-delay:1s;
+}
+@keyframes appearing-menu {
+  from{
+    visibility: visible;
+    bottom: -50px;
+    opacity: 0;
 
-
+  }
+  to{
+    visibility: visible;
+    bottom: 0px;
+    opacity: 1;
+  }
+}
+.hidden{
+  display: none;
+}

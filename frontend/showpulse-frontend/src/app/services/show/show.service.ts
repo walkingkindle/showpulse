@@ -8,7 +8,7 @@ import { Show } from '../../Models/Show';
 })
 export class ShowService {
 
-  private apiUrl = 'https://localhost:7054/api/Shows/records/'
+  private apiUrl = 'https://localhost:7054/api/Shows/search/'
 
 constructor(private http:HttpClient) { }
 

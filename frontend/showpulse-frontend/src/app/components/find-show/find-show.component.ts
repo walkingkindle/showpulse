@@ -4,12 +4,14 @@ import { Show } from '../../Models/Show';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
+import { LoadingBarComponent } from '../loading-bar/loading-bar.component';
 
 @Component({
   selector: 'app-find-show',
   templateUrl: './find-show.component.html',
   styleUrls: ['./find-show.component.css'],
-  imports:[FormsModule,CommonModule,RouterLink],
+  imports:[FormsModule,CommonModule,RouterLink,ReactiveFormsModule],
   standalone:true
 })
 export class FindShowComponent implements OnInit {
@@ -18,13 +20,16 @@ export class FindShowComponent implements OnInit {
   imageUrlwebsite!:string;
   loading!:boolean;
   selectedShows:Show[]
+  showIds:number[]
 
-  constructor(private showService:ShowService) {
+  constructor(private showService:ShowService, private loadingBarComponent:LoadingBarComponent) {
     this.input = "";
     this.shows;
     this.imageUrlwebsite = "www.thetvdb.com/"
     this.loading;
     this.selectedShows = [];
+    this.showIds = [];
+    
   }
 
   search(): void {
@@ -38,6 +43,13 @@ export class FindShowComponent implements OnInit {
   selectShow(show:Show){
     console.log(this.selectedShows);
     this.selectedShows.push(show)
+  }
+  handleSubmit():void{
+    console.log(this.selectedShows);
+    this.selectedShows.forEach(show => {
+      this.showIds.push(show.id)
+    });
+    this.loadingBarComponent.showIds = this.showIds;
   }
 
   ngOnInit() {

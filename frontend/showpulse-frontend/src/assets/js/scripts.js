@@ -94,7 +94,7 @@ $(function () {
     bar = document.querySelector('.progress-bar'),
     counter = document.querySelector('.count'),
     i = 0,
-    throttle = 0.5; // 0-1
+    throttle = 0.2; // 0-1
 
 (function draw() {
   if(i <= 100) {
@@ -115,7 +115,9 @@ $(function () {
         counter.style.opacity = '0'; // Fade out the percentage
       }, 1500); 
     setTimeout(function() {
+        $('#progress-bar-container').addClass('hidden') 
         $('.carousel-container').removeClass('hidden')
+        
     },1500)
   }
 })();

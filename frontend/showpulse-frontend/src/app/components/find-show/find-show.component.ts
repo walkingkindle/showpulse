@@ -3,7 +3,7 @@ import { ShowService } from '../../services/show/show.service';
 import { Show } from '../../Models/Show';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoadingBarComponent } from '../loading-bar/loading-bar.component';
 
@@ -23,7 +23,7 @@ export class FindShowComponent implements OnInit {
   showIds:number[]
   showForm!: FormGroup;
 
-  constructor(private showService:ShowService, private loadingBarComponent:LoadingBarComponent, private formBuilder:FormBuilder) {
+  constructor(private showService:ShowService, private loadingBarComponent:LoadingBarComponent, private formBuilder:FormBuilder,private router:Router) {
     this.input = "";
     this.shows;
     this.imageUrlwebsite = "www.thetvdb.com/"
@@ -35,6 +35,8 @@ export class FindShowComponent implements OnInit {
   }
 
   search(): void {
+    this.input = this.showForm.get('showSearch')?.value;
+    console.log(this.input)
     this.loading = true;
     this.showService.getRecordsByInput(this.input)
       .subscribe(shows => {this.shows = shows
@@ -55,7 +57,7 @@ export class FindShowComponent implements OnInit {
   }
   handleSubmit():void{
     if(this.showForm.valid){
-      console.log(this.showForm.value.selectedShows)
+      this.router.navigate(["/recommendit"])
     }else{
       alert("Please select at least 3 shows.")
     } 

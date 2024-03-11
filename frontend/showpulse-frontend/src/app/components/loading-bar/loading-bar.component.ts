@@ -14,6 +14,7 @@ export class LoadingBarComponent implements OnInit {
    }
 
   ngOnInit() {
+    console.log(this.showIds)
   }
   
 

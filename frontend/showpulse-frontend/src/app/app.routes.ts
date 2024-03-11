@@ -6,6 +6,6 @@ import { LoadingBarComponent } from './components/loading-bar/loading-bar.compon
 export const routes: Routes = [
     {path: '', component:HomeComponent},
     {path: 'search', component:SearchComponent},
-    {path:'recommendit',component:LoadingBarComponent},
+    {path:'recommendit',component:RecommenditComponent},
     
 ];

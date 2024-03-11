@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ShowService } from '../../services/show/show.service';
 import { Show } from '../../Models/Show';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -21,8 +21,9 @@ export class FindShowComponent implements OnInit {
   loading!:boolean;
   selectedShows:Show[]
   showIds:number[]
+  showForm!: FormGroup;
 
-  constructor(private showService:ShowService, private loadingBarComponent:LoadingBarComponent) {
+  constructor(private showService:ShowService, private loadingBarComponent:LoadingBarComponent, private formBuilder:FormBuilder) {
     this.input = "";
     this.shows;
     this.imageUrlwebsite = "www.thetvdb.com/"
@@ -30,29 +31,42 @@ export class FindShowComponent implements OnInit {
     this.selectedShows = [];
     this.showIds = [];
     
+    
   }
 
   search(): void {
     this.loading = true;
     this.showService.getRecordsByInput(this.input)
       .subscribe(shows => {this.shows = shows
+      this.loading = false;
     });
-    this.loading = false;
+    
   }
 
   selectShow(show:Show){
-    console.log(this.selectedShows);
-    this.selectedShows.push(show)
+    const showName = show.name;
+    const isDuplicate = this.selectedShows.some(item => item.name == showName);
+    if (!isDuplicate){
+      const selectedShowsControl = this.showForm.get('selectedShows');
+      selectedShowsControl?.setValue([... selectedShowsControl.value,show])
+    }else{
+      console.log(`Show ${showName} is already selected.`)
+    }
   }
   handleSubmit():void{
-    console.log(this.selectedShows);
-    this.selectedShows.forEach(show => {
-      this.showIds.push(show.id)
-    });
-    this.loadingBarComponent.showIds = this.showIds;
+    if(this.showForm.valid){
+      console.log(this.showForm.value.selectedShows)
+    }else{
+      alert("Please select at least 3 shows.")
+    } 
+
   }
 
   ngOnInit() {
+    this.showForm = this.formBuilder.group({
+      showSearch:[''],
+      selectedShows:[[], Validators.minLength(3)]
+    })
   }
 
 }

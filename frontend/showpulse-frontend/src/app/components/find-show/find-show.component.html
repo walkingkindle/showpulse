@@ -1,5 +1,5 @@
 <!--Search section-->
-<form (submit)="handleSubmit()">
+<form [formGroup]="showForm" (ngSubmit)="handleSubmit()">
 <section class="py-7" id="faq">
     <div class="container">
         <div class="row p-3">
@@ -14,7 +14,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" name="show-search" placeholder="Search shows..." [(ngModel)]="input" (input)="search()">
+                        <input type="text" class="form-control" formControlName="showSearch" placeholder="Search shows..."  (input)="search()">
                         <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
                     </div>
                 <div class="search-results" *ngIf="!loading && input !== '' && shows">
@@ -64,7 +64,7 @@
     </section>
     <div class="row justify-content-center">
         <div class="glowing-btn-wrapper mt-3 mr-3">
-        <button type="submit" class='glowing-btn' routerLink="/recommendit" routerLinkActive="router-link-active" >
+        <button type="submit" class='glowing-btn' [routerLink]="'/recommendit'" routerLinkActive="router-link-active" >
             <span class='glowing-txt'>G<span class='faulty-letter'>E</span>NERATE</span>
         </button>
         </div>

@@ -15,7 +15,7 @@ builder.Services.AddDbContext<ShowContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //CORS
-builder.Services.AddCors(options => options.AddPolicy(name: "frontend", policy => { policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader(); }));
+builder.Services.AddCors(options => options.AddPolicy(name: "frontend", policy => { policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader().AllowCredentials(); }));
 
 
 

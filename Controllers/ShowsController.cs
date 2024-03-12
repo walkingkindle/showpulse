@@ -134,7 +134,6 @@ namespace ShowPulse.Controllers
                 {
                     Show? suggestedShow = await _context.Shows.FindAsync(showId);
                     suggestedShows.Add(suggestedShow);
-                    
                 }
                 return suggestedShows;
             }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ShowService } from '../../services/show/show.service';
 import { Show } from '../../Models/Show';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
@@ -20,8 +20,8 @@ export class FindShowComponent implements OnInit {
   imageUrlwebsite!:string;
   loading!:boolean;
   selectedShows:Show[]
-  showIds:number[]
   showForm!: FormGroup;
+  showIds:number[];
 
   constructor(private showService:ShowService, private loadingBarComponent:LoadingBarComponent, private formBuilder:FormBuilder,private router:Router) {
     this.input = "";
@@ -36,7 +36,6 @@ export class FindShowComponent implements OnInit {
 
   search(): void {
     this.input = this.showForm.get('showSearch')?.value;
-    console.log(this.input)
     this.loading = true;
     this.showService.getRecordsByInput(this.input)
       .subscribe(shows => {this.shows = shows
@@ -57,7 +56,9 @@ export class FindShowComponent implements OnInit {
   }
   handleSubmit():void{
     if(this.showForm.valid){
-      this.router.navigate(["/recommendit"])
+      this.showIds = this.showForm.get('selectedShows')?.value.map((show: any) => show.id);
+      console.log(this.showIds);
+      this.router.navigate(["/recommendit"],{queryParams:{showIds:this.showIds}})
     }else{
       alert("Please select at least 3 shows.")
     } 

@@ -1,4 +1,4 @@
-import { HttpClient} from '@angular/common/http';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Show } from '../../Models/Show';
@@ -21,12 +21,10 @@ constructor(private http:HttpClient) {
 getRecordsByInput(input:string):Observable<Show[]>{
   return this.http.get<Show[]>(`${this.apiUrl}search/${input}`)
 }
-getRecommendedShowsFromInput(showId1:number,showId2:number,showId3:number):Observable<Show[]>{
-  return this.http.get<Show[]>(`${this.apiUrl}suggest/${showId1}/${showId2}/${showId3}`);
+getRecommendedShowsFromInput(showIds:number[]):Observable<Show[]>{
+  const headers = new HttpHeaders({'Content-Type':'application/json'})
+  const options = {headers:headers, withCredentials:true}
+  return this.http.get<Show[]>(`${this.apiUrl}suggest/${showIds[0]}/${showIds[1]}/${showIds[2]}`,options);
 }
-retrieveShowIds(selectedShows:Show[]){
-  
-}
-
 
 }

@@ -1,7 +1,10 @@
-import { Component, ElementRef, Inject, OnInit, PLATFORM_ID, Renderer2, inject } from '@angular/core';
+import { Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID, Renderer2, inject } from '@angular/core';
 import { PricingComponent } from '../../components/pricing/pricing.component';
 import { LoadingBarComponent } from '../../components/loading-bar/loading-bar.component';
 import { isPlatformBrowser } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { ShowService } from '../../services/show/show.service';
+import { Show } from '../../Models/Show';
 
 @Component({
   selector: 'app-recommendit',
@@ -11,11 +14,23 @@ import { isPlatformBrowser } from '@angular/common';
   standalone:true,
 })
 export class RecommenditComponent implements OnInit {
+  recommendedShows:Show[];
 
-  constructor(private elementRef:ElementRef, private renderer:Renderer2, @Inject(PLATFORM_ID) private platformId:Object) {
+  constructor(private elementRef:ElementRef, private showService:ShowService, private renderer:Renderer2, @Inject(PLATFORM_ID) private platformId:Object,private route:ActivatedRoute) {
+    this.recommendedShows = [];
    }
 
   ngOnInit() {
+   this.route.queryParams.subscribe(params =>{
+    const showIds:number[] = params['showIds'];
+    if(showIds && showIds.length == 3){
+      this.showService.getRecommendedShowsFromInput(showIds).subscribe(
+        recomendations => {this.recommendedShows = recomendations}
+      )
+    }else{
+      console.log("Invalid route") //exception here
+    }
+   }) 
     if(isPlatformBrowser(this.platformId)){
     const bar = this.elementRef.nativeElement.querySelector('.progress-bar');
     const counter = this.elementRef.nativeElement.querySelector('.count');

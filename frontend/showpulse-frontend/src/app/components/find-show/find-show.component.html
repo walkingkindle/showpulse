@@ -1,4 +1,5 @@
 <!--Search section-->
+<!--Error alert-->
 <form [formGroup]="showForm" (ngSubmit)="handleSubmit()">
 <section class="py-7" id="faq">
     <div class="container">
@@ -9,12 +10,11 @@
             </div>
         </div>
     </div>
-
     <div class="container-fluid" style="padding: 40px">
         <div class="row justify-content-center">
             <div class="col-md-6">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" formControlName="showSearch" placeholder="Search shows..."  (input)="search()">
+                        <input type="text" class="form-control" id="search-show" formControlName="showSearch" placeholder="Search shows..."  (input)="search()">
                         <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
                     </div>
                 <div class="search-results" *ngIf="!loading && input !== '' && shows">

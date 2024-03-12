@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms'
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 import { LoadingBarComponent } from '../loading-bar/loading-bar.component';
 
 @Component({
@@ -17,7 +18,6 @@ import { LoadingBarComponent } from '../loading-bar/loading-bar.component';
 export class FindShowComponent implements OnInit {
   input: string;
   shows!: Show[];
-  imageUrlwebsite!:string;
   loading!:boolean;
   selectedShows:Show[]
   showForm!: FormGroup;
@@ -26,7 +26,6 @@ export class FindShowComponent implements OnInit {
   constructor(private showService:ShowService, private loadingBarComponent:LoadingBarComponent, private formBuilder:FormBuilder,private router:Router) {
     this.input = "";
     this.shows;
-    this.imageUrlwebsite = "www.thetvdb.com/"
     this.loading;
     this.selectedShows = [];
     this.showIds = [];
@@ -54,15 +53,32 @@ export class FindShowComponent implements OnInit {
       console.log(`Show ${showName} is already selected.`)
     }
   }
-  handleSubmit():void{
-    if(this.showForm.valid){
+  handleSubmit(): void {
+    if (this.showForm.valid) {
       this.showIds = this.showForm.get('selectedShows')?.value.map((show: any) => show.id);
-      console.log(this.showIds);
-      this.router.navigate(["/recommendit"],{queryParams:{showIds:this.showIds}})
-    }else{
+      if (this.showIds.length < 3) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
+          }
+        });
+        Toast.fire({
+          icon: 'warning',
+          title: 'Parsing failed',
+          text: 'Please select at least 3 shows.',
+        });
+      } else {
+        this.router.navigate(["/recommendit"], { queryParams: { showIds: this.showIds } })
+      }
+    } else {
       alert("Please select at least 3 shows.")
-    } 
-
+    }
   }
 
   ngOnInit() {
@@ -71,5 +87,6 @@ export class FindShowComponent implements OnInit {
       selectedShows:[[], Validators.minLength(3)]
     })
   }
+
 
 }

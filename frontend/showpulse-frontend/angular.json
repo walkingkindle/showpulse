@@ -25,9 +25,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/sweetalert2/dist/sweetalert2.min.css"
             ],
-            "scripts": [],
+            "scripts": ["node_modules/sweetalert2/dist/sweetalert2.all.min.js"],
             "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {

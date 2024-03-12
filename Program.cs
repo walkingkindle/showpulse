@@ -25,6 +25,7 @@ builder.Services.AddCors(options => options.AddPolicy(name: "frontend", policy =
 
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -8290,3 +8290,9 @@ popup.active{
 .hidden{
   display: none;
 }
+#show-search{
+  color:#ff0000;
+}
+.form-control:focus{
+  background-color: black;
+}

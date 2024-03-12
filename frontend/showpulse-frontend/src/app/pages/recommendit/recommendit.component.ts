@@ -1,5 +1,4 @@
 import { Component, ElementRef, Inject, Input, OnInit, PLATFORM_ID, Renderer2, inject } from '@angular/core';
-import { PricingComponent } from '../../components/pricing/pricing.component';
 import { LoadingBarComponent } from '../../components/loading-bar/loading-bar.component';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';

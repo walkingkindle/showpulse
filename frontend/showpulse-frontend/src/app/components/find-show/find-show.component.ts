@@ -7,6 +7,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { LoadingBarComponent } from '../loading-bar/loading-bar.component';
+import { AlertService } from '../../services/show/alert.service';
 
 @Component({
   selector: 'app-find-show',
@@ -22,13 +23,16 @@ export class FindShowComponent implements OnInit {
   selectedShows:Show[]
   showForm!: FormGroup;
   showIds:number[];
+  formComplete:boolean;
 
-  constructor(private showService:ShowService, private loadingBarComponent:LoadingBarComponent, private formBuilder:FormBuilder,private router:Router) {
+  constructor(private showService:ShowService, private alertService:AlertService, private loadingBarComponent:LoadingBarComponent, private formBuilder:FormBuilder,private router:Router) {
     this.input = "";
     this.shows;
     this.loading;
     this.selectedShows = [];
     this.showIds = [];
+    this.formComplete = true;
+
     
     
   }
@@ -56,28 +60,13 @@ export class FindShowComponent implements OnInit {
   handleSubmit(): void {
     if (this.showForm.valid) {
       this.showIds = this.showForm.get('selectedShows')?.value.map((show: any) => show.id);
-      if (this.showIds.length < 3) {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer);
-            toast.addEventListener('mouseleave', Swal.resumeTimer);
-          }
-        });
-        Toast.fire({
-          icon: 'warning',
-          title: 'Parsing failed',
-          text: 'Please select at least 3 shows.',
-        });
-      } else {
         this.router.navigate(["/recommendit"], { queryParams: { showIds: this.showIds } })
       }
-    } else {
-      alert("Please select at least 3 shows.")
+     else {
+      if (this.showForm.get('selectedShows')?.value.length < 3){
+        console.log('alert')
+        this.alertService.error('Not enough shows','Please enter three shows')
+      }
     }
   }
 

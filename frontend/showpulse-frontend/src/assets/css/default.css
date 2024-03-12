@@ -8296,3 +8296,8 @@ popup.active{
 .form-control:focus{
   background-color: black;
 }
+#footer-container{
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}

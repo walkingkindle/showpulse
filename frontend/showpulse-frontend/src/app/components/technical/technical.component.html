@@ -1,0 +1,29 @@
+<!-- features section -->
+<section class="pt-6 pb-7" id="features">
+  <div class="container">
+      <div class="row">
+          <div class="col-md-6 mx-auto text-center">
+              <h2 class="heading-black">How I made RECOMMENDIT, a show companion</h2>
+              <p class="text-muted lead">Read about my story.</p>
+          </div>
+          <div class="row mt-4">
+              <p class="text-muted p-3 text-center">As someone who is a software engineer, one of my passsions are TV shows. Good ones. I found out that most people ( including myself ) have only seen about 20% of the popular shows that we always have suggested on Netflix. This has led me to think: What I make a project that will take an input of a show and it's description and then somehow compare it to a large dataset of shows, which will, hopefully bring more to light some underrated content, or something that is not-so popular. </p>
+              <p class="text-muted p-3 text-center">This has led me to look into models that are the underline of <a href="https://www.turing.com/kb/content-based-filtering-in-recommender-systems#content-based-filtering">content-based filtering engines</a>, such as various ML models that turn words into vectors and then by using  <a href="https://en.wikipedia.org/wiki/Cosine_similarity">cosine similarity</a>, compare those vectors to each other. Eventually I found <a href="https://www.analyticsvidhya.com/blog/2021/07/word2vec-for-word-embeddings-a-beginners-guide/">Word2Vec</a>, which is exactly what I needed, a model that converts words into vectors.</p>
+              <p class="text-muted p-3 text-center">For my database I generated a free copy of the <a href="https://thetvdb.com/">TheTvDB</a> via their API. Then I used that data and converted each of the show descriptions into vectors. Having Vectors ready, the idea was to get three shows from the user, calculate the average vector and then use <a href="https://en.wikipedia.org/wiki/Cosine_similarity">cosine similarity</a> to compare the average vector to each other. I generated a controller and API via ASP.NET and made the function with a ready database. </p>
+              <p class="text-muted p-3 text-center">Finally, it was time to create a decent-looking UI using Angular. The page that retrieves shows has a loading bar animation, along with a timer. The frontend was made via Bootstrap, Angular and a few helper libraries.</p>
+          </div>
+        </div>
+          <div class="row p-4 social-links justify-content-center">
+            <a href="https://www.linkedin.com/in/aleksahadzic/" target="_blank">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://github.com/walkingkindle" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="https://twitter.com/aleksa_hadzic" target="_blank">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </div>
+
+      </div>
+</section>

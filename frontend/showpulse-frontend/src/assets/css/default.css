@@ -8301,3 +8301,27 @@ popup.active{
   justify-content: center;
   display: flex;
 }
+.carousel-control-next{
+  position: fixed;
+}
+.carousel-control-prev{
+  position: fixed;
+}
+.card-title{
+  margin-left:10px;
+}
+.card-text{
+  margin-left:10px;
+}
+.pushed{
+  margin-top:20px;
+}
+tec-doc{
+  color:teal;
+}
+.social-links a {
+   margin: 0 10px;
+  text-decoration: none;
+  color: #1de9b6;
+  font-size: 34px;
+  }

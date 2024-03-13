@@ -44,36 +44,6 @@ namespace ShowPulse.Controllers
             return show;
         }
 
-        // PUT: api/Shows/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutShow(int id, Show show)
-        {
-            if (id != show.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(show).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ShowExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return NoContent();
-        }
-        
         //GET: api/records
         [HttpGet("search/{input}")]
         //Return records that match the spefic input (NAME)
@@ -91,32 +61,12 @@ namespace ShowPulse.Controllers
         }
 
 
-        [HttpGet("vector/{id}")]
-        public async Task<IActionResult> GetShowVector(int id)
-        {
-            Show? show = await _context.FindAsync<Show>(id);
-            if (show == null)
-            {
-                return NotFound();
-            }
-
-            var vector = show.VectorDouble;
-            if(vector!= null)
-            {
-                return Ok(vector);
-            }
-            else
-            {
-                return StatusCode(500, "Error getting the vector from the api");
-            }
-        }
-
         [HttpGet("suggest/{id1}/{id2}/{id3}")]
-        public async Task<List<Show>>  GetRecomendedShows(int id1, int id2, int id3)
+        public async Task<List<Show>> GetRecomendedShows(int id1, int id2, int id3)
         {
             List<int> showIds = new List<int>() { id1, id2, id3 };
             List<double[]> showVectors = new List<double[]>();
-          
+
             foreach (var id in showIds)
             {
                 Show show = await _context.FindAsync<Show>(id);
@@ -124,13 +74,13 @@ namespace ShowPulse.Controllers
                 showVectors.Add(showVector);
 
             }
-            if(showVectors!= null)
+            if (showVectors != null)
             {
                 double[] averageVector = VectorEngine.CalculateAverageVector(showVectors);
                 List<Show> allShows = await _context.Shows.ToListAsync();
                 List<int> recomendedShowIds = VectorEngine.GetSimilarities(allShows, averageVector, 8);
                 List<Show> suggestedShows = new List<Show>();
-                foreach(int showId in recomendedShowIds)
+                foreach (int showId in recomendedShowIds)
                 {
                     Show? suggestedShow = await _context.Shows.FindAsync(showId);
                     suggestedShows.Add(suggestedShow);
@@ -142,33 +92,6 @@ namespace ShowPulse.Controllers
             {
                 return new List<Show>();
             }
-        }
-        
-        // POST: api/Shows
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Show>> PostShow(Show show)
-        {
-            _context.Shows.Add(show);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetShow", new { id = show.Id }, show);
-        }
-
-        // DELETE: api/Shows/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteShow(int id)
-        {
-            var show = await _context.Shows.FindAsync(id);
-            if (show == null)
-            {
-                return NotFound();
-            }
-
-            _context.Shows.Remove(show);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
         private bool ShowExists(int id)

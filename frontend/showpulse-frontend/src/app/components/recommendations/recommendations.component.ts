@@ -3,13 +3,13 @@ import { ShowService } from '../../services/show/show.service';
 import { Show} from '../../Models/Show';
 import { CommonModule } from '@angular/common';
 @Component({
-  selector: 'app-loading-bar',
-  templateUrl: './loading-bar.component.html',
-  styleUrls: ['./loading-bar.component.css'],
+  selector: 'app-recommendations',
+  templateUrl: './recommendations.component.html',
+  styleUrls: ['./recommendations.component.css'],
   imports:[CommonModule],
   standalone:true,
 })
-export class LoadingBarComponent implements OnInit {
+export class Recommendations implements OnInit {
 @Input() recommendedShows!: Show[];
 
   constructor(private showService:ShowService, private elementRef:ElementRef,private renderer:Renderer2) {
@@ -17,7 +17,6 @@ export class LoadingBarComponent implements OnInit {
    }
 
   ngOnInit() {
-    console.log(this.recommendedShows)
   }
   ngAfterViewInit() {
     const carouselElement = this.elementRef.nativeElement.querySelector("#myCarousel")

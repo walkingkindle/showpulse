@@ -15,17 +15,16 @@
             <div class="col-md-6">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" id="search-show" formControlName="showSearch" placeholder="Search shows..."  (input)="search()">
-                        <button class="btn btn-primary" type="button" id="button-addon2">Search</button>
                     </div>
                 <div class="search-results" *ngIf="!loading && input !== '' && shows">
                     <a class="choose-show" *ngFor="let show of shows" (click)="selectShow(show)">
                         <div class="card mb-2">
                             <div class="row no-gutters">
                                 <div class="col-md-1">
-                                    <img src="https://www.thetvdb.com{{show.imageUrl}}" alt="Show Image" class="img-fluid" style="max-width: 100px;"> 
+                                    <img [src]="show.imageUrl ? 'https://www.thetvdb.com' + show.imageUrl : 'assets/img/show.jpg'" alt="Show Image" class="img-fluid" style="max-width: 100px;"> 
                                 </div>
                                 <div class="col-md-9">
-                                    <div class="card-body">
+                                    <div class="card-body" id="showCardBody">
                                         <h5 class="card-title">{{ show.name }}</h5>
                                         <p class="card-text">{{ show.releaseYear }}</p>
                                     </div>

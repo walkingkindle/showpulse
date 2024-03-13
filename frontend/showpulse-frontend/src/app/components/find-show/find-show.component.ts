@@ -6,8 +6,8 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { LoadingBarComponent } from '../loading-bar/loading-bar.component';
 import { AlertService } from '../../services/show/alert.service';
+import { Recommendations } from '../recommendations/recommendations.component';
 
 @Component({
   selector: 'app-find-show',
@@ -25,7 +25,7 @@ export class FindShowComponent implements OnInit {
   showIds:number[];
   formComplete:boolean;
 
-  constructor(private showService:ShowService, private alertService:AlertService, private loadingBarComponent:LoadingBarComponent, private formBuilder:FormBuilder,private router:Router) {
+  constructor(private showService:ShowService, private alertService:AlertService, private recommendationsComponent:Recommendations, private formBuilder:FormBuilder,private router:Router) {
     this.input = "";
     this.shows;
     this.loading;
@@ -48,23 +48,30 @@ export class FindShowComponent implements OnInit {
   }
 
   selectShow(show:Show){
-    const showName = show.name;
-    const isDuplicate = this.selectedShows.some(item => item.name == showName);
-    if (!isDuplicate){
-      const selectedShowsControl = this.showForm.get('selectedShows');
-      selectedShowsControl?.setValue([... selectedShowsControl.value,show])
-    }else{
-      console.log(`Show ${showName} is already selected.`)
+    const showId = show.id;
+    const selectedShowsControl = this.showForm.get('selectedShows');
+    let isDuplicate = false;
+    for(let i = 0; i < selectedShowsControl?.value.length; i++){
+      if(selectedShowsControl?.value[i].id === showId){
+        isDuplicate = true;
+      }
     }
-  }
+    if (!isDuplicate){
+        selectedShowsControl?.setValue([... selectedShowsControl.value,show])
+      }
+    else{
+      this.alertService.error('Already selected','You have already selected this show.')
+    }
+      this.input = ''
+    }
+  
   handleSubmit(): void {
     if (this.showForm.valid) {
       this.showIds = this.showForm.get('selectedShows')?.value.map((show: any) => show.id);
         this.router.navigate(["/recommendit"], { queryParams: { showIds: this.showIds } })
       }
      else {
-      if (this.showForm.get('selectedShows')?.value.length < 3){
-        console.log('alert')
+      if (this.showForm.get('selectedShows')!.value.length < 3){
         this.alertService.error('Not enough shows','Please enter three shows')
       }
     }

@@ -8,4 +8,5 @@ export interface Show {
     originalCountry:string;
     originalLanguage:string;
     releaseYear:number;
+    vector:number;
 }

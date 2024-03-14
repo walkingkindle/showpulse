@@ -15,25 +15,15 @@ namespace ShowPulse.Engine
         }
         public static double[] CalculateAverageVector(List<double[]> vectors)
         {
-            if (vectors == null || vectors.Count == 0 || vectors.Any(v => v == null || v.Length == 0))
-            {
-                throw new ArgumentException("Invalid input vectors.");
-            }
-
             int vectorLength = vectors[0].Length;
             double[] averageVector = new double[vectorLength];
             int count = 0;
-
-            foreach (var vector in vectors)
+            
+            for(int j =0; j < vectors.Count; j++)
             {
-                if (vector.Length != vectorLength)
-                {
-                    throw new ArgumentException("All vectors must have the same length");
-                }
-
                 for (int i = 0; i < vectorLength; i++)
                 {
-                    averageVector[i] += vector[i];
+                    averageVector[i] += vectors[j][i];
                 }
                 count++;
             }
@@ -68,15 +58,15 @@ namespace ShowPulse.Engine
                 return 0; // Default similarity when one of the vectors is a zero vector
             }
         }
-        public static List<int>  GetSimilarities(List<Show> allShows, double[] userAverageVector, int topN)
+        public static List<int>  GetSimilarities(List<ShowInfo> allShows, double[] userAverageVector, int topN)
         {
             Dictionary<int, double> similarities = new Dictionary<int, double>();
-            foreach(var show in allShows)
+            for(int i =0; i < allShows.Count; i++)
             {
-                if (show.VectorDouble != null)
+                if (allShows[i].VectorDouble != null)
                 {
-                    double similarity = CalculateCosineSimilarity(userAverageVector, show.VectorDouble);
-                    similarities.Add(show.Id, similarity);
+                    double similarity = CalculateCosineSimilarity(userAverageVector, allShows[i].VectorDouble);
+                    similarities.Add(allShows[i].Id, similarity);
                         
                 }
             }

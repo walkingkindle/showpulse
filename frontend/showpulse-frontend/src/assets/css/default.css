@@ -8324,4 +8324,14 @@ tec-doc{
   text-decoration: none;
   color: #1de9b6;
   font-size: 34px;
-  }
+}
+#search-show{
+  border:solid;
+  border-radius: 20px;
+  border-color:#1de9b6;
+  outline: none !important;
+
+}
+#search-div-show{
+  border: none;
+}

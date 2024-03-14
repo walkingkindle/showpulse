@@ -14,4 +14,5 @@ import { SearchComponent } from './pages/search/search.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+  footerTitle:string = 'Technical Details';
 }

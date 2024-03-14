@@ -21,10 +21,13 @@ constructor(private http:HttpClient) {
 getRecordsByInput(input:string):Observable<Show[]>{
   return this.http.get<Show[]>(`${this.apiUrl}search/${input}`)
 }
-getRecommendedShowsFromInput(showIds:number[]):Observable<Show[]>{
+getRecordsById(id:number):Observable<Show>{
+  return this.http.get<Show>(`${this.apiUrl}${id}`)
+}
+getRecommendedShowsFromInput(showIds:number[]):Observable<number[]>{
   const headers = new HttpHeaders({'Content-Type':'application/json'})
   const options = {headers:headers, withCredentials:true}
-  return this.http.get<Show[]>(`${this.apiUrl}suggest/${showIds[0]}/${showIds[1]}/${showIds[2]}`,options);
+  return this.http.get<number[]>(`${this.apiUrl}suggest/${showIds[0]}/${showIds[1]}/${showIds[2]}`,options);
 }
 
 }

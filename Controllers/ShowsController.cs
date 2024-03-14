@@ -49,7 +49,7 @@ namespace ShowPulse.Controllers
         //Return records that match the spefic input (NAME)
         public async Task<ActionResult<IEnumerable<Show>>> GetRecordsByInput(string input)
         {
-            var exactmatchedRecords = _context.Shows.Where(s => s.Name == input).Select(s => new Show { Id = s.Id, Name = s.Name, Description = s.Description, ImageUrl = s.ImageUrl, ReleaseYear = s.ReleaseYear, FinalEpisodeAired = s.FinalEpisodeAired, Score = s.Score, OriginalCountry = s.OriginalCountry, OriginalLanguage = s.OriginalLanguage }).ToList(); ;//exact match?
+            var exactmatchedRecords =  _context.Shows.Where(s => s.Name == input).Select(s => new Show { Id = s.Id, Name = s.Name, Description = s.Description, ImageUrl = s.ImageUrl, ReleaseYear = s.ReleaseYear, FinalEpisodeAired = s.FinalEpisodeAired, Score = s.Score, OriginalCountry = s.OriginalCountry, OriginalLanguage = s.OriginalLanguage }).ToList(); ;//exact match?
 
             List<Show> matchedRecords = _context.Shows.Where(s => s.Name.Contains(input)).OrderByDescending(s => s.Name.StartsWith(input)).ThenByDescending(s => s.Name.IndexOf(input)).Take(10).Select(s => new Show { Id = s.Id, Name = s.Name, Description = s.Description, ImageUrl = s.ImageUrl, ReleaseYear = s.ReleaseYear, FinalEpisodeAired = s.FinalEpisodeAired, Score = s.Score, OriginalCountry = s.OriginalCountry, OriginalLanguage = s.OriginalLanguage }).ToList();
             
@@ -62,35 +62,28 @@ namespace ShowPulse.Controllers
 
 
         [HttpGet("suggest/{id1}/{id2}/{id3}")]
-        public async Task<List<Show>> GetRecomendedShows(int id1, int id2, int id3)
+        public async Task<List<int>> GetRecomendedShows(int id1, int id2, int id3)
         {
             List<int> showIds = new List<int>() { id1, id2, id3 };
-            List<double[]> showVectors = new List<double[]>();
 
-            foreach (var id in showIds)
-            {
-                Show show = await _context.FindAsync<Show>(id);
-                double[] showVector = show.VectorDouble;
-                showVectors.Add(showVector);
+            var vectorDoublesQuery =  _context.Shows
+                .Where(s => showIds.Contains(s.Id))
+                .Select(s => s.VectorDouble);
 
-            }
-            if (showVectors != null)
+            List<double[]> vectorDoubles = await vectorDoublesQuery.ToListAsync();
+            if (vectorDoubles != null )
             {
-                double[] averageVector = VectorEngine.CalculateAverageVector(showVectors);
-                List<Show> allShows = await _context.Shows.ToListAsync();
+                double[] averageVector = VectorEngine.CalculateAverageVector(vectorDoubles);
+                var allShowsQuery = _context.Shows
+                    .Select(s => new ShowInfo { Id = s.Id, VectorDouble = s.VectorDouble });
+
+                List<ShowInfo> allShows = await allShowsQuery.ToListAsync();
                 List<int> recomendedShowIds = VectorEngine.GetSimilarities(allShows, averageVector, 8);
-                List<Show> suggestedShows = new List<Show>();
-                foreach (int showId in recomendedShowIds)
-                {
-                    Show? suggestedShow = await _context.Shows.FindAsync(showId);
-                    suggestedShows.Add(suggestedShow);
-                }
-                return suggestedShows;
+                return recomendedShowIds;
             }
-
             else
             {
-                return new List<Show>();
+                return [];
             }
         }
 

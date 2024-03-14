@@ -3,10 +3,5 @@ export interface Show {
     name:string;
     description:string;
     imageUrl:string;
-    finalEpisodeAired:string;
-    score:string;
-    originalCountry:string;
-    originalLanguage:string;
     releaseYear:number;
-    vector:number;
 }

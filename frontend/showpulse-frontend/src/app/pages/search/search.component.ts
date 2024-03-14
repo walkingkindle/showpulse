@@ -9,7 +9,6 @@ import Swal from 'sweetalert2';
   selector: 'app-search',
   templateUrl: './search.component.html',
   imports:[FindShowComponent,HttpClientModule],
-  styleUrls: ['./search.component.css'],
   standalone:true
 })
 export class SearchComponent implements OnInit {

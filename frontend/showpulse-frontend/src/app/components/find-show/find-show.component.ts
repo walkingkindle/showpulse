@@ -12,7 +12,6 @@ import { Recommendations } from '../recommendations/recommendations.component';
 @Component({
   selector: 'app-find-show',
   templateUrl: './find-show.component.html',
-  styleUrls: ['./find-show.component.css'],
   imports:[FormsModule,CommonModule,RouterLink,ReactiveFormsModule],
   standalone:true
 })
@@ -37,6 +36,7 @@ export class FindShowComponent implements OnInit {
     
   }
 
+  //method that retrieves records based on input
   search(): void {
     this.input = this.showForm.get('showSearch')?.value;
     this.loading = true;
@@ -47,6 +47,7 @@ export class FindShowComponent implements OnInit {
     
   }
 
+  //appends to an array that later gets verified
   selectShow(show:Show){
     const showId = show.id;
     const selectedShowsControl = this.showForm.get('selectedShows');
@@ -64,9 +65,15 @@ export class FindShowComponent implements OnInit {
     }
       this.input = ''
     }
+   
+    //verifies that selectedShows has exactly 3 showIds
+    isFormValid():boolean{
+      return this.showForm.get('selectedShows')?.value.length >= 3;
+    }
   
+    //handle submit and throw alertyfy
   handleSubmit(): void {
-    if (this.showForm.valid) {
+    if (this.showForm.valid && this.isFormValid()) {
       this.showIds = this.showForm.get('selectedShows')?.value.map((show: any) => show.id);
         this.router.navigate(["/recommendit"], { queryParams: { showIds: this.showIds } })
       }
@@ -77,6 +84,7 @@ export class FindShowComponent implements OnInit {
     }
   }
 
+  //form builder
   ngOnInit() {
     this.showForm = this.formBuilder.group({
       showSearch:[''],

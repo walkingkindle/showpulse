@@ -8,7 +8,6 @@ import { from, mergeMap } from 'rxjs';
 @Component({
   selector: 'app-recommendations',
   templateUrl: './recommendations.component.html',
-  styleUrls: ['./recommendations.component.css'],
   imports:[CommonModule],
   standalone:true,
 })
@@ -27,6 +26,7 @@ export class Recommendations implements OnInit {
     this.showIdsParams = [];
    }
 
+//start loading animation, subscribe to API and stop loading when finalized
 ngOnInit() {
   if (isPlatformBrowser(this.platformId)) {
     this.startLoadingAnimation();
@@ -64,15 +64,8 @@ ngOnInit() {
     }
   });
 }
-  ngAfterViewInit() {
-    const carouselElement = this.elementRef.nativeElement.querySelector("#myCarousel")
-    if(carouselElement){
-      this.renderer.addClass(carouselElement,'carousel')
-    }else{
-      console.error("Carousel element not found")
-    }
 
-  }
+//loading bar animation logic
   private startLoadingAnimation() {
     const bar = this.elementRef.nativeElement.querySelector('.progress-bar');
     const counter = this.elementRef.nativeElement.querySelector('.count');
@@ -107,6 +100,7 @@ ngOnInit() {
 
     draw();
   }
+  //wait 500ms and stop animation ( when the query is ready)
    private finalizeAnimation() {
     const bar = this.elementRef.nativeElement.querySelector('.progress-bar');
     const counter = this.elementRef.nativeElement.querySelector('.count');

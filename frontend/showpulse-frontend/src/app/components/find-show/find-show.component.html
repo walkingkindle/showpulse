@@ -1,12 +1,11 @@
-<!--Search section-->
-<!--Error alert-->
+<!--Search Section-->
 <form [formGroup]="showForm" (ngSubmit)="handleSubmit()">
 <section class="py-7" id="faq">
     <div class="container">
         <div class="row p-3">
             <div class="col-md-6 mx-auto text-center">
                 <h2>Search Show</h2>
-                <p class="text-muted lead">Type at least 3 shows, and we'll show some recommendations</p>
+                <p class="text-muted lead">Type 3 shows, and we'll show some recommendations.</p>
             </div>
         </div>
     </div>
@@ -48,7 +47,7 @@
             <div class="card mb-2" *ngFor="let show of showForm.get('selectedShows')?.value">
                 <div class="row no-gutters">
                     <div class="col-md-1">
-                        <img src="https://www.thetvdb.com{{show.imageUrl}}" alt="Show Image" class="img-fluid" style="max-width: 100px;"> 
+                        <img [src]="show.imageUrl ? 'https://www.thetvdb.com' + show.imageUrl : 'assets/img/show.jpg'" alt="Show Image" class="img-fluid" style="max-width: 100px;"> 
                     </div>
                     <div class="col-md-9">
                         <div class="card-body">

@@ -23,13 +23,6 @@ namespace ShowPulse.Controllers
             _context = context;
         }
 
-        // GET: api/Shows
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Show>>> GetShows()
-        {
-            return await _context.Shows.ToListAsync();
-        }
-
         // GET: api/Shows/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Show>> GetShow(int id)
@@ -83,7 +76,7 @@ namespace ShowPulse.Controllers
             }
             else
             {
-                return [];
+                return [id1,id2,id3];
             }
         }
 

@@ -4,7 +4,6 @@ import { TechnicalComponent } from '../../components/technical/technical.compone
 @Component({
   selector: 'app-tech-doc',
   templateUrl: './tech-doc.component.html',
-  styleUrls: ['./tech-doc.component.css'],
   standalone:true,
   imports:[TechnicalComponent]
 })

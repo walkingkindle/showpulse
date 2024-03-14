@@ -14,8 +14,6 @@ namespace ShowPulse.Models
     {
         public ShowContext() { }
         public ShowContext(DbContextOptions<ShowContext> options) : base(options) { }
-
-
         public virtual DbSet<Show> Shows { get; set; }
 
 

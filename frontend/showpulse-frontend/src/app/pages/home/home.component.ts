@@ -8,7 +8,6 @@ import { FeatureComponent } from '../../components/feature/feature.component';
   selector: 'app-h`ome',
   imports: [BannerComponent,FeatureComponent],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
   standalone: true,
 })
 export class HomeComponent implements OnInit {

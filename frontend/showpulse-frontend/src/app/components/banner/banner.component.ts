@@ -6,7 +6,6 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './banner.component.html',
-  styleUrl: './banner.component.css'
 })
 export class BannerComponent {
 

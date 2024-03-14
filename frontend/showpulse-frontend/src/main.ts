@@ -6,4 +6,4 @@ bootstrapApplication(AppComponent, appConfig)
   .catch((err) => console.error(err));
 
 
-//NODE_TLS_REJECT_UNAUTHORIZED=0 ng serve
+//NODE_TLS_REJECT_UNAUTHORIZED=0 ng serve  (dev)

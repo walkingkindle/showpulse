@@ -63,7 +63,8 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "showpulse-frontend:build:production"
+              "buildTarget": "showpulse-frontend:build:production",
+              "proxyConfig": "src/proxy.conf.json"
             },
             "development": {
               "buildTarget": "showpulse-frontend:build:development"

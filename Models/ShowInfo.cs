@@ -3,6 +3,6 @@
     public class ShowInfo
     {
         public int Id { get; set; }
-        public double[] VectorDouble { get; set; }
+        public double[]? VectorDouble { get; set; }
     }
 }

@@ -64,13 +64,26 @@ export class FindShowComponent implements OnInit {
       this.alertService.error('Already selected','You have already selected this show.')
     }
       this.input = ''
+      this.clearSearchInput();
     }
    
     //verifies that selectedShows has exactly 3 showIds
     isFormValid():boolean{
-      return this.showForm.get('selectedShows')?.value.length >= 3;
+      return this.showForm.get('selectedShows')?.value.length === 3;
     }
-  
+    
+    removeShow(show:Show){
+      const selectedShowsControl = this.showForm.get('selectedShows');
+      if(selectedShowsControl){
+        const selectedShows = selectedShowsControl.value as Show[];
+        const index = selectedShows.findIndex(s => s.id === show.id);
+        if(index !== -1){
+          selectedShows.splice(index,1);
+          selectedShowsControl.setValue(selectedShows);
+        }
+      }
+      
+    }
     //handle submit and throw alertyfy
   handleSubmit(): void {
     if (this.showForm.valid && this.isFormValid()) {
@@ -81,6 +94,9 @@ export class FindShowComponent implements OnInit {
       if (this.showForm.get('selectedShows')!.value.length < 3){
         this.alertService.error('Not enough shows','Please enter three shows')
       }
+      else if(this.showForm.get('selectedShows')!.value.length > 3){
+        this.alertService.error("You've selected 4 shows", "Please select 3 shows")
+      }
     }
   }
 
@@ -90,6 +106,10 @@ export class FindShowComponent implements OnInit {
       showSearch:[''],
       selectedShows:[[], Validators.minLength(3)]
     })
+  }
+
+  clearSearchInput(){
+    this.showForm.get('showSearch')?.setValue('');
   }
 
 

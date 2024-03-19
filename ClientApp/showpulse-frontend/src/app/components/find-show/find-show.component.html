@@ -13,7 +13,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                     <div class="input-group mb-3" id="search-div-show">
-                        <input type="text" class="form-control" id="search-show" formControlName="showSearch" placeholder="Search shows..."  (input)="search()">
+                        <input type="text" class="form-control" id="search-show" formControlName="showSearch" placeholder="Search shows..."  (input)="search(); ">
                     </div>
                 <div class="search-results" *ngIf="!loading && input !== '' && shows">
                     <a class="choose-show" *ngFor="let show of shows" (click)="selectShow(show)">
@@ -54,6 +54,9 @@
                             <h5 class="card-title">{{ show.name }}</h5>
                             <p class="card-text">{{ show.releaseYear }}</p>
                         </div>
+                    </div>
+                    <div class="col-md-1 ml-auto text-right">
+                        <button class="btn btn-danger btn-sm" (click)="removeShow(show)">X</button>
                     </div>
                 </div>
             </div>

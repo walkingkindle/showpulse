@@ -71,7 +71,7 @@ ngOnInit() {
     const counter = this.elementRef.nativeElement.querySelector('.count');
 
     let i = 0;
-    const throttle = 0.49; // 0-1
+    const throttle = 0.4; // 0-1
 
     if (!bar || !counter) {
       console.error("Progress bar or the counter could not be found.");

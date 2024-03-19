@@ -8247,6 +8247,11 @@ popup.active{
   width: 100%;
   background: #1de9b6;
 }
+@media(max-width:576px){
+  .progress-bar{
+    display: none;
+  }
+}
 
 .done {
   height: 100%;

@@ -10,7 +10,7 @@ import { Show } from '../../Models/Show';
 export class ShowService {
   showIds:number[];
   selectedShows:Show[];
-  private apiUrl = 'https://localhost:7054/api/Shows/'
+  private apiUrl = 'https://recommendit.ink/api/Shows/'
 
 constructor(private http:HttpClient) {
   this.showIds = [];

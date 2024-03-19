@@ -13,28 +13,27 @@ namespace ShowPulse.Engine
             [JsonProperty("vector")]
             public List<double?>? Vector { get; set; }
         }
-        public static double[] CalculateAverageVector(List<double[]> vectors)
+        public static double[] CalculateAverageVector(List<double[]?> vectors)
         {
             int vectorLength = vectors[0].Length;
             double[] averageVector = new double[vectorLength];
-            int count = 0;
-            
-            for(int j =0; j < vectors.Count; j++)
+
+            foreach (var vector in vectors)
             {
                 for (int i = 0; i < vectorLength; i++)
                 {
-                    averageVector[i] += vectors[j][i];
+                    averageVector[i] += vector[i];
                 }
-                count++;
             }
 
             for (int i = 0; i < vectorLength; i++)
             {
-                averageVector[i] /= count;
+                averageVector[i] /= vectors.Count;
             }
 
             return averageVector;
         }
+
         public static double CalculateCosineSimilarity(double[] vectorA, double[] vectorB)
         {
             // Calculate dot product
@@ -58,22 +57,18 @@ namespace ShowPulse.Engine
                 return 0; // Default similarity when one of the vectors is a zero vector
             }
         }
-        public static List<int>  GetSimilarities(List<ShowInfo> allShows, double[] userAverageVector, int topN)
+
+        public static async Task<List<int>> GetSimilarities(List<ShowInfo> allShows, double[] userAverageVector, int topN)
         {
-            Dictionary<int, double> similarities = new Dictionary<int, double>();
-            for(int i =0; i < allShows.Count; i++)
-            {
-                if (allShows[i].VectorDouble != null)
-                {
-                    double similarity = CalculateCosineSimilarity(userAverageVector, allShows[i].VectorDouble);
-                    similarities.Add(allShows[i].Id, similarity);
-                        
-                }
-            }
+            var similarities = allShows
+                .Where(s => s.VectorDouble != null)
+                .ToDictionary(s => s.Id, s => CalculateCosineSimilarity(userAverageVector, s.VectorDouble));
+
             var sortedSimilarities = similarities.OrderByDescending(kv => kv.Value);
             var topShows = sortedSimilarities.Take(topN);
             return topShows.Select(kv => kv.Key).ToList();
         }
-
     }
+
 }
+

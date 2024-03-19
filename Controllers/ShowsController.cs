@@ -40,13 +40,13 @@ namespace ShowPulse.Controllers
         //GET: api/records
         [HttpGet("search/{input}")]
         //Return records that match the spefic input (NAME)
-        public async Task<ActionResult<IEnumerable<Show>>> GetRecordsByInput(string input)
+        public ActionResult<IEnumerable<Show>> GetRecordsByInput(string input)
         {
-            var exactmatchedRecords =  _context.Shows.Where(s => s.Name == input).Select(s => new Show { Id = s.Id, Name = s.Name, Description = s.Description, ImageUrl = s.ImageUrl, ReleaseYear = s.ReleaseYear, FinalEpisodeAired = s.FinalEpisodeAired, Score = s.Score, OriginalCountry = s.OriginalCountry, OriginalLanguage = s.OriginalLanguage }).ToList(); ;//exact match?
+            var exactmatchedRecords = _context.Shows.Where(s => s.Name == input).Select(s => new Show { Id = s.Id, Name = s.Name, Description = s.Description, ImageUrl = s.ImageUrl, ReleaseYear = s.ReleaseYear, FinalEpisodeAired = s.FinalEpisodeAired, Score = s.Score, OriginalCountry = s.OriginalCountry, OriginalLanguage = s.OriginalLanguage }).ToList(); ;//exact match?
 
-            List<Show> matchedRecords = _context.Shows.Where(s => s.Name.Contains(input)).OrderByDescending(s => s.Name.StartsWith(input)).ThenByDescending(s => s.Name.IndexOf(input)).Take(10).Select(s => new Show { Id = s.Id, Name = s.Name, Description = s.Description, ImageUrl = s.ImageUrl, ReleaseYear = s.ReleaseYear, FinalEpisodeAired = s.FinalEpisodeAired, Score = s.Score, OriginalCountry = s.OriginalCountry, OriginalLanguage = s.OriginalLanguage }).ToList();
-            
-            if(exactmatchedRecords.Count == 0)
+            List<Show> matchedRecords = _context.Shows.Where(s => s.Name.Contains(input)).Take(10).Select(s => new Show { Id = s.Id, Name = s.Name, Description = s.Description, ReleaseYear = s.ReleaseYear, ImageUrl = s.ImageUrl }).ToList();
+
+            if (exactmatchedRecords.Count == 0)
             {
                 return matchedRecords;
             }
@@ -55,30 +55,39 @@ namespace ShowPulse.Controllers
 
 
         [HttpGet("suggest/{id1}/{id2}/{id3}")]
-        public async Task<List<int>> GetRecomendedShows(int id1, int id2, int id3)
+        public async Task<List<int>> GetRecommendedShows(int id1, int id2, int id3)
         {
-            List<int> showIds = new List<int>() { id1, id2, id3 };
+            List<int> showIds = new List<int> { id1, id2, id3 };
 
-            var vectorDoublesQuery =  _context.Shows
-                .Where(s => showIds.Contains(s.Id))
-                .Select(s => s.VectorDouble);
+            // Fetch all shows from the database asynchronously
+            var allShows = await _context.Shows
+                .Select(s => new { s.Id, s.VectorDouble })
+                .ToListAsync();
 
-            List<double[]> vectorDoubles = await vectorDoublesQuery.ToListAsync();
-            if (vectorDoubles != null )
+            // Filter shows by the specified IDs
+            var selectedShows = allShows.Where(b => showIds.Contains(b.Id)).ToList();
+
+            if (selectedShows.Any())
             {
-                double[] averageVector = VectorEngine.CalculateAverageVector(vectorDoubles);
-                var allShowsQuery = _context.Shows
-                    .Select(s => new ShowInfo { Id = s.Id, VectorDouble = s.VectorDouble });
+                // Calculate average vector
+                List<double[]?> vectorList = selectedShows.Select(s => s.VectorDouble).ToList();
+                double[] averageVector = VectorEngine.CalculateAverageVector(vectorList);
 
-                List<ShowInfo> allShows = await allShowsQuery.ToListAsync();
-                List<int> recomendedShowIds = VectorEngine.GetSimilarities(allShows, averageVector, 8);
-                return recomendedShowIds;
+                // Calculate similarities and get recommended show IDs asynchronously
+                List<int> recommendedShowIds = await VectorEngine.GetSimilarities(
+                    allShows.Select(s => new ShowInfo { Id = s.Id, VectorDouble = s.VectorDouble }).ToList(),
+                    averageVector,
+                    8);
+
+                return recommendedShowIds;
             }
             else
             {
-                return [id1,id2,id3];
+                // Return the input IDs if no shows are found
+                return showIds;
             }
         }
+
 
         private bool ShowExists(int id)
         {

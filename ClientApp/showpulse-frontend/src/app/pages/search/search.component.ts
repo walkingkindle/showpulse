@@ -20,7 +20,6 @@ export class SearchComponent implements OnInit {
       if(alert) {
         this.showSweetAlert(alert);
       } else {
-        // Clear existing alerts
         Swal.close();
       }
     });

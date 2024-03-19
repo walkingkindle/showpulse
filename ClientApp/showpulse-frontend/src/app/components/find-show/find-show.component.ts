@@ -68,7 +68,7 @@ export class FindShowComponent implements OnInit {
    
     //verifies that selectedShows has exactly 3 showIds
     isFormValid():boolean{
-      return this.showForm.get('selectedShows')?.value.length >= 3;
+      return this.showForm.get('selectedShows')?.value.length === 3;
     }
   
     //handle submit and throw alertyfy
@@ -88,7 +88,7 @@ export class FindShowComponent implements OnInit {
   ngOnInit() {
     this.showForm = this.formBuilder.group({
       showSearch:[''],
-      selectedShows:[[], Validators.minLength(3)]
+      selectedShows:[[], Validators.minLength(3),Validators.maxLength(3)]
     })
   }
 

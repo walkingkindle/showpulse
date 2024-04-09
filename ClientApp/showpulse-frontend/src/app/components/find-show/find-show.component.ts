@@ -104,7 +104,7 @@ export class FindShowComponent implements OnInit {
   ngOnInit() {
     this.showForm = this.formBuilder.group({
       showSearch:[''],
-      selectedShows:[[], Validators.minLength(3),Validators.maxLength(3)]
+      selectedShows:[[], Validators.minLength(3)]
     })
   }
 

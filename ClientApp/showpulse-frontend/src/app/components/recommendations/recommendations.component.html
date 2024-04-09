@@ -5,6 +5,9 @@
       <div class="progress-bar"></div>
       <h1 class="count"></h1>
       </div>
+      <div class="container justify-content-center hidden" id="pleaseWaitMessage" *ngIf="loadingCompleteButStillWaiting">
+        <p class="text-center">Please wait some more</p>
+    </div>
   </div>
 
   <div class="carousel-container hidden">

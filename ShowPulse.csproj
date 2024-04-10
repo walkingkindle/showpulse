@@ -25,4 +25,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="ClientApp\showpulse-frontend\dist\showpulse-frontend\prerendered-routes.json" />
+  </ItemGroup>
+
 </Project>

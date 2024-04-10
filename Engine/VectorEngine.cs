@@ -58,7 +58,7 @@ namespace ShowPulse.Engine
             }
         }
 
-        public static async Task<List<int>> GetSimilarities(List<ShowInfo> allShows, double[] userAverageVector, int topN)
+        public static async Task<List<int>> GetSimilarities(IEnumerable<ShowInfo> allShows, double[] userAverageVector, int topN)
         {
             var similarities = allShows
                 .Where(s => s.VectorDouble != null)

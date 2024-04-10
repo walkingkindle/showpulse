@@ -21,7 +21,7 @@ export class Recommendations implements OnInit {
 
   constructor(private elementRef:ElementRef, private alertService:AlertService,private router:Router, private showService:ShowService, private renderer:Renderer2, @Inject(PLATFORM_ID) private platformId:Object,private route:ActivatedRoute) {
     this.recommendedShows = [];
-    this.loading = true; 
+    this.loading = true;
     this.recommendedShowIds = [];
     this.recommendedShow;
     this.showIdsParams = [];
@@ -41,7 +41,6 @@ ngOnInit() {
       this.showService.getRecommendedShowsFromInput(this.showIdsParams).pipe(
         mergeMap(recommendations => {
           this.recommendedShowIds = recommendations;
-          console.log(recommendations)
           return from(this.recommendedShowIds);
         }),
         mergeMap(recommendedShowId => {
@@ -69,7 +68,7 @@ private startLoadingAnimation() {
   const counter = this.elementRef.nativeElement.querySelector('.count');
 
   let i = 0;
-  const throttle = 0.2; // 0-1
+  const throttle = 0.3; // 0-1
 
   if (!bar || !counter) {
       console.error("Progress bar or the counter could not be found.");
@@ -106,14 +105,14 @@ private startLoadingAnimation() {
 private finalizeAnimation() {
     const bar = this.elementRef.nativeElement.querySelector('.progress-bar');
     const counter = this.elementRef.nativeElement.querySelector('.count');
-  
+
     setTimeout(() => {
       this.renderer.addClass(bar, 'done'); // Add the "done" class for fading effect
       this.renderer.setStyle(counter, 'transition', 'opacity 1s'); // Apply transition to counter
       this.renderer.setStyle(bar, 'opacity', '0'); // Fade out the bar
       this.renderer.setStyle(counter, 'opacity', '0'); // Fade out the percentage
     }, 500);
-  
+
     setTimeout(() => {
       const progressBarContainer = this.elementRef.nativeElement.querySelector('#progress-bar-container');
       const carouselContainer = this.elementRef.nativeElement.querySelector('.carousel-container');

@@ -14,7 +14,7 @@ export class ShowService {
 
 constructor(private http:HttpClient) {
   this.showIds = [];
-  this.selectedShows = [];
+  this.selectedShows  = [];
 
  }
 
@@ -24,10 +24,10 @@ getRecordsByInput(input:string):Observable<Show[]>{
 getRecordsById(id:number):Observable<Show>{
   return this.http.get<Show>(`${this.apiUrl}${id}`)
 }
-getRecommendedShowsFromInput(showIds:number[]):Observable<number[]>{
+getRecommendedShowsFromInput(showIds:number[]):Observable<Show[]>{
   const headers = new HttpHeaders({'Content-Type':'application/json'})
   const options = {headers:headers, withCredentials:true}
-  return this.http.get<number[]>(`${this.apiUrl}suggest/${showIds[0]}/${showIds[1]}/${showIds[2]}`,options);
+  return this.http.get<Show[]>(`${this.apiUrl}suggest/${showIds[0]}/${showIds[1]}/${showIds[2]}`,options);
 }
 
 }

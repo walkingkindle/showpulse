@@ -29,4 +29,8 @@
     <_ContentIncludedByDefault Remove="ClientApp\showpulse-frontend\dist\showpulse-frontend\prerendered-routes.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Remove="appsettings.json" />
+  </ItemGroup>
+
 </Project>

@@ -88,30 +88,16 @@ namespace ShowPulse.Controllers
         public async Task<IActionResult> GetRecommendedShows(int id1, int id2, int id3)
         {
             List<int> userShowIds = new List<int> { id1, id2, id3 };
-            List<double[]> userShowsVectors = new List<double[]>();
-            for (int i = 0; i < userShowIds.Count; i++)
-            {
-                double[] showVector = ShowService.GetVectorById(_context,userShowIds[i]);
-                if (showVector != null)
-                {
-                    userShowsVectors.Add(showVector);
-                }
-            }
-
             List<ShowInfo> allShows = ShowService.GetShowInfos(_context);
-           
-
-            if(allShows != null){
-                double[] averageVector = VectorEngine.CalculateAverageVector(userShowsVectors);
-                List<int> recommendedShowIds = await VectorEngine.GetSimilarities(allShows,averageVector,8);
-               return Ok(recommendedShowIds);
-            }
-            else
-            {
-                return NotFound("Not shows found for the specified IDs.");
-            }
+            var userShowsVectorss =
+                allShows.Where(s => userShowIds.Contains(s.Id)).Select(s => s.VectorDouble).ToList();
+            double[] averageVector = VectorEngine.CalculateAverageVector(userShowsVectorss);
+            List<int> recommendedShowIds = await VectorEngine.GetSimilarities(allShows, averageVector, 8);
+            //filter shows that the user already chose.
+            List<int> filteredRecommendedShowIds = recommendedShowIds.Except(userShowIds).ToList();
+            List<Show?> recommendedShows =
+                filteredRecommendedShowIds.Select(id => ShowService.GetShowById(_context, id)).ToList();
+            return Ok(recommendedShows);
         }
-
-    
     }
 }

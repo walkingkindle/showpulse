@@ -38,21 +38,9 @@ ngOnInit() {
     if (this.showIdsParams && this.showIdsParams.length === 3) {
       // Convert string values to numbers
       const showIdsParamsNumeric = this.showIdsParams.map(id => +id);
-      this.showService.getRecommendedShowsFromInput(this.showIdsParams).pipe(
-        mergeMap(recommendations => {
-          this.recommendedShowIds = recommendations;
-          return from(this.recommendedShowIds);
-        }),
-        mergeMap(recommendedShowId => {
-          // For each recommended show ID, fetch the show details
-          return this.showService.getRecordsById(recommendedShowId);
-        })
-      ).subscribe(recommendedShow => {
-        // Filter out the shows that have IDs not included in showIdsParams
-        if (!showIdsParamsNumeric.includes(recommendedShow.id)) {
-          this.recommendedShows.push(recommendedShow);
-        }
-      }, error => {
+      this.showService.getRecommendedShowsFromInput(this.showIdsParams).subscribe(response => {
+        this.recommendedShows = response;
+        }, error => {
         console.error('Error fetching recommended shows:', error);
       }, () => {
         // Finalize animation and set loading to false when all calls are completed

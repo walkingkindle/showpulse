@@ -2,10 +2,11 @@
 using Newtonsoft.Json;
 using ShowPulse.Models;
 using System.Collections.Generic;
+using Recommendit.Models;
 
 namespace ShowPulse.Engine
 {
-    public class VectorEngine
+    public class VectorAIService:IVectorService
     {
 
         public class VectorObject
@@ -13,7 +14,7 @@ namespace ShowPulse.Engine
             [JsonProperty("vector")]
             public List<double?>? Vector { get; set; }
         }
-        public static double[] CalculateAverageVector(List<double[]?> vectors)
+        public  double[] CalculateAverageVector(List<double[]?> vectors)
         {
             int vectorLength = vectors[0].Length;
             double[] averageVector = new double[vectorLength];
@@ -34,7 +35,7 @@ namespace ShowPulse.Engine
             return averageVector;
         }
 
-        public static double CalculateCosineSimilarity(double[] vectorA, double[] vectorB)
+        private double CalculateCosineSimilarity(double[] vectorA, double[] vectorB)
         {
             // Calculate dot product
             double dotProduct = 0;
@@ -58,7 +59,7 @@ namespace ShowPulse.Engine
             }
         }
 
-        public static async Task<List<int>> GetSimilarities(IEnumerable<ShowInfo> allShows, double[] userAverageVector, int topN)
+        public async Task<List<int>> GetSimilarities(IEnumerable<ShowInfo> allShows, double[] userAverageVector, int topN)
         {
             var similarities = allShows
                 .Where(s => s.VectorDouble != null)

@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ShowPulse.Models;
-using System.Text.Json;
-using System.Text;
-using ShowPulse.Engine;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using ShowPulse.Services;
+using Recommendit.Models;
+using Recommendit.Result;
 
 namespace ShowPulse.Controllers
 {
@@ -18,86 +10,53 @@ namespace ShowPulse.Controllers
     [ApiController]
     public class ShowsController : ControllerBase
     {
-        private readonly ShowContext _context;
+        private readonly IShowService _showService;
 
-        public ShowsController(ShowContext context)
+        public ShowsController(IShowService showService)
         {
-            _context = context;
+            _showService = showService;
         }
 
         // GET: api/Shows/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Show>> GetShow(int id)
+        public async Task<IResult> GetShow(int id)
         {
-            Show show = ShowService.GetShowById(_context,id);
+           var show = await _showService.GetShowByIdAsync(id);
+           
+            return show.Match(onSuccess: () => Results.Ok(show.Value), onFailure: (error) => Results.BadRequest(show.Error));
 
-            if (show == null)
-            {
-                return NotFound();
-            }
-
-            return show;
         }
 
         //GET: api/records
         [HttpGet("search/{input}")]
         //Returns an exact match of records found by name, otherwise returns any .Contains match.
-        public ActionResult<IEnumerable<Show>> GetRecordsByInput(string input)
+        public async Task<IActionResult> GetRecordsByInput(string input)
         {
-            try
-            {
-                var exactmatchedRecords = _context.Shows.Where(s => s.Name == input)
-                   .Select(s => new Show
-                   {
-                       Id = s.Id,
-                       Name = s.Name,
-                       Description = s.Description,
-                       ImageUrl = s.ImageUrl,
-                       ReleaseYear = s.ReleaseYear,
-                       FinalEpisodeAired = s.FinalEpisodeAired,
-                       Score = s.Score,
-                       OriginalCountry = s.OriginalCountry,
-                       OriginalLanguage = s.OriginalLanguage
-                   }).ToList(); ;//exact match?
 
-                List<Show> matchedRecords = _context.Shows.Where(s => s.Name.Contains(input))
-                    .Take(10).Select(s => new Show
-                    {
-                        Id = s.Id,
-                        Name = s.Name,
-                        Description = s.Description,
-                        ReleaseYear = s.ReleaseYear,
-                        ImageUrl = s.ImageUrl
-                    }).ToList();
+            var matchingRecords = await _showService.GetShowsExactMatchingRecordsAsync(input);
 
-                if (exactmatchedRecords.Count == 0)
-                {
-                    return Ok(matchedRecords);
-                }
-                return Ok(exactmatchedRecords);
-            }
-            catch (Exception ex)
+            if(matchingRecords.IsFailure)
             {
-                 return StatusCode(500, "An error occurred while processing your request.");
-            }
+                matchingRecords = await _showService.GetMatchingShowRecordsAsync(input);
+            };
+
+
+            return Ok(matchingRecords);                
+     
         }
 
 
         [HttpGet("suggest/{id1}/{id2}/{id3}")]
         // Uses cosine similarity to recommend shows based on user's preference.
-        public async Task<IActionResult> GetRecommendedShows(int id1, int id2, int id3)
+        public async Task<IResult> GetRecommendedShows(int id1, int id2, int id3)
         {
-            List<int> userShowIds = new List<int> { id1, id2, id3 };
-            List<ShowInfo> allShows = ShowService.GetShowInfos(_context);
-            var userShowsVectorss =
-                allShows.Where(s => userShowIds.Contains(s.Id)).Select(s => s.VectorDouble).ToList();
-            double[] averageVector = VectorEngine.CalculateAverageVector(userShowsVectorss);
-            List<int> recommendedShowIds = await VectorEngine.GetSimilarities(allShows, averageVector, 8);
-            //filter shows that the user already chose.
-            List<int> filteredRecommendedShowIds = recommendedShowIds.Except(userShowIds).ToList();
-            List<Show?> recommendedShows =
-                filteredRecommendedShowIds.Select(id => ShowService.GetShowById(_context, id)).ToList();
-            return Ok(recommendedShows);
+            var recommendedShows = _showService.GetRecommendedShowsWithCosineSimilarity(new List<int>{id1, id2, id3},5);
+
+
+            return recommendedShows.Result.Match(
+                onSuccess: () => Results.Ok(recommendedShows.Result.Value),
+                onFailure: error => Results.BadRequest(recommendedShows.Result.Error));
+
         }
     }
 }

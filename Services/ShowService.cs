@@ -1,36 +1,134 @@
 using ShowPulse.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Recommendit.Models;
+using Recommendit.Result;
 
 namespace ShowPulse.Services;
 
-public class ShowService
+public class ShowService : IShowService
 {
 
+    private readonly ShowContext _context;
 
-    public static readonly Func<ShowContext, int, Show?> GetShowById =
-        EF.CompileQuery(
-            (ShowContext context, int id) => context.Set<Show>().FirstOrDefault(c => c.Id == id));
+    private readonly IVectorService _vectorService;
 
-    public static readonly Func<ShowContext, int, double[]?> GetVectorById =
-        EF.CompileQuery(
-            (ShowContext context, int id) =>
-                context.Set<Show>()
-                    .Where(c => c.Id == id)
-                    .Select(c => c.VectorDouble)
-                    .FirstOrDefault());
-
-    public static readonly Func<ShowContext, IEnumerable<ShowInfo>> GetAllShows =
-        EF.CompileQuery(
-            (ShowContext context) =>
-                context.Shows.Select(s => new ShowInfo
-                {
-                    Id = s.Id,
-                    VectorDouble = s.VectorDouble
-                }));
-
-    public static List<ShowInfo> GetShowInfos(ShowContext context)
+    public ShowService(ShowContext dbContext)
     {
-        var showInfos = GetAllShows(context).ToList();
-        return showInfos;
+        _context = dbContext;
     }
+
+    
+    public async Task<Result<List<Show>>> GetRecommendedShowsWithCosineSimilarity(List<int> showIds,int topN=5)
+    {
+        var allShows = GetShowInfos();
+
+        if (allShows.Result.IsFailure)
+        {
+            return Result<List<Show>>.Failure(allShows.Result.Error);
+        }
+        var userShowsVectors = allShows.Result.Value.Where(show => showIds.Contains(show.Id));
+        double[] averageVector = _vectorService.CalculateAverageVector(userShowsVectors.Select(x=> x.VectorDouble).ToList());
+        List<int> recommendedShowIds = await _vectorService.GetSimilarities(allShows.Result.Value, averageVector, topN);
+        List<int> filteredRecommendedShowIds = recommendedShowIds.Except(showIds).ToList();
+
+        var recommendedShows = await GetRecommendedShowByIds(showIds);
+        
+        return Result<List<Show>>.Success(recommendedShows.Value);
+       
+       
+    }
+
+    private async Task<Result<List<Show>>> GetRecommendedShowByIds(List<int> showIds)
+    {
+        var shows = await _context.Shows.AsNoTracking().Where(x=> showIds.Contains(x.Id)).ToListAsync();
+
+        if (shows.IsNullOrEmpty())
+        {
+            return Result<List<Show>>.Failure(DatabaseErrors.NullCollectionError);
+        }
+
+        return Result<List<Show>>.Success(shows);
+
+    }
+
+    private async Task<Result<List<ShowInfo>>> GetShowInfos()
+    {
+        List<ShowInfo> showInfos = await _context.Shows.AsNoTracking().Select(x => new ShowInfo
+        {
+            Id = x.Id,
+            VectorDouble = x.VectorDouble,
+        }).ToListAsync();
+
+        if (showInfos.IsNullOrEmpty())
+        {
+            return Result<List<ShowInfo>>.Failure(DatabaseErrors.NullCollectionError);
+        }
+
+        return Result<List<ShowInfo>>.Success(showInfos);
+
+
+
+
+    }
+
+    public async Task<Result<List<Show>>> GetShowsExactMatchingRecordsAsync(string input)
+    {
+        var exactmatchedRecords = await _context.Shows.AsNoTracking().Where(s => s.Name == input)
+               .Select(s => new Show
+               {
+                   Id = s.Id,
+                   Name = s.Name,
+                   Description = s.Description,
+                   ImageUrl = s.ImageUrl,
+                   ReleaseYear = s.ReleaseYear,
+                   FinalEpisodeAired = s.FinalEpisodeAired,
+                   Score = s.Score,
+                   OriginalCountry = s.OriginalCountry,
+                   OriginalLanguage = s.OriginalLanguage
+               }).ToListAsync();
+
+        return exactmatchedRecords.IsNullOrEmpty()
+            ? Result<List<Show>>.Failure(DatabaseErrors.NullCollectionError)
+            : Result<List<Show>>.Success(exactmatchedRecords);
+
+
+    }
+
+    public async Task<Result<Show>> GetShowByIdAsync(int showId)
+    {
+        var show = await _context.Shows.FirstOrDefaultAsync(x => x.Id == showId);
+
+        if (show == null)
+        {
+            return Result<Show>.Failure(DatabaseErrors.NullShowError);
+        }
+
+        return Result<Show>.Success(show);
+
+    }
+
+
+    public async Task<Result<List<Show>>> GetMatchingShowRecordsAsync(string input)
+    {
+         var matchedRecords = await _context.Shows.Where(s => s.Name.Contains(input))
+                    .Take(10).Select(s => new Show
+                    {
+                        Id = s.Id,
+                        Name = s.Name,
+                        Description = s.Description,
+                        ReleaseYear = s.ReleaseYear,
+                        ImageUrl = s.ImageUrl
+                    }).ToListAsync();
+
+         if (matchedRecords.IsNullOrEmpty())
+         {
+             return Result<List<Show>>.Failure(DatabaseErrors.NullCollectionError);
+         }
+
+        return Result<List<Show>>.Success(matchedRecords);
+
+    }
+
+
 }

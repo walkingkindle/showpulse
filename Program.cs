@@ -1,37 +1,19 @@
-using Microsoft.EntityFrameworkCore;
-using ShowPulse.Models;
 
-var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
-builder.Services.AddHttpClient();
-builder.Services.AddDbContext<ShowContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"), sqlOptions =>
+namespace Recommendit{
+    public class Program
     {
-        sqlOptions.EnableRetryOnFailure();
-    });
-});
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options => options.AddPolicy(name: "frontend", policy => { policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader().AllowCredentials(); }));
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
 
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+    }
 }
-else
-{
-    app.UseHttpsRedirection();
-}
-
-app.UseCors("frontend");
-app.UseAuthorization();
-app.MapControllers();
-app.Run();
-
 

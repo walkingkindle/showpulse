@@ -54,11 +54,16 @@ public class ShowService : IShowService
 
     private async Task<Result<List<ShowInfo>>> GetShowInfos()
     {
-        List<ShowInfo> showInfos = await _context.Shows.AsNoTracking().Select(x => new ShowInfo
-        {
-            Id = x.Id,
-            VectorDouble = x.VectorDouble,
-        }).ToListAsync();
+        // Use Include to load the related ShowInfo entities
+        List<ShowInfo> showInfos = await _context.Shows
+            .AsNoTracking()
+            .Include(x => x.ShowInfo) // Include the ShowInfo
+            .Select(x => new ShowInfo
+            {
+                Id = x.ShowInfo.Id, // Use the ShowInfo Id
+                VectorDouble = x.ShowInfo.VectorDouble // Access the VectorDouble from ShowInfo
+            })
+            .ToListAsync();
 
         if (showInfos.IsNullOrEmpty())
         {
@@ -66,11 +71,9 @@ public class ShowService : IShowService
         }
 
         return Result<List<ShowInfo>>.Success(showInfos);
-
-
-
-
     }
+
+
 
     public async Task<Result<List<Show>>> GetShowsExactMatchingRecordsAsync(string input)
     {

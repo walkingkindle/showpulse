@@ -16,6 +16,7 @@ namespace ShowPulse.Controllers
         {
             _showService = showService;
         }
+        
 
         // GET: api/Shows/5
         [HttpGet("{id}")]

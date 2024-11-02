@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShowPulse.Models;
 using Recommendit.Models;
 using Recommendit.Result;
+using Recommendit.Interface;
 
 namespace ShowPulse.Controllers
 {

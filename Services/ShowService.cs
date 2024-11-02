@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Recommendit.Models;
 using Recommendit.Result;
+using Recommendit.Interface;
+using Recommendit.Helpers;
 
 namespace ShowPulse.Services;
 

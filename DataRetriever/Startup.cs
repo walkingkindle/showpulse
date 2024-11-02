@@ -4,6 +4,7 @@ using DataRetriever.Models;
 using DataRetriever.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Recommendit.Interface;
 using Recommendit.Models;
 using ShowPulse.Models;
 using ShowPulse.Services;
